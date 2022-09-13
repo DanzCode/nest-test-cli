@@ -1,0 +1,36 @@
+version: "2.2"
+
+services:
+  db:
+    image: postgres:alpine
+    restart: on-failure
+    ports:
+      - 5435:5432
+    networks:
+      - database
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+
+  devserver:
+    image: node:16-bullseye
+    restart: on-failure
+    command: sh -c "apt update && apt install sudo && sudo -u node sh -c \"yarn install && yarn start:dev \""
+    networks:
+      - database
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./logs:/logs
+    depends_on:
+      - db
+
+networks:
+  database:
+    driver: bridge
+volumes:
+  db-data:
