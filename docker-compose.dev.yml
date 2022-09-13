@@ -15,7 +15,7 @@ services:
       POSTGRES_DB: postgres
 
   devserver:
-    image: node:16-bullseye
+    image: nest-cli-test-app
     restart: on-failure
     command: sh -c "apt update && apt install sudo && sudo -u node sh -c \"yarn install && yarn start:dev \""
     networks:
